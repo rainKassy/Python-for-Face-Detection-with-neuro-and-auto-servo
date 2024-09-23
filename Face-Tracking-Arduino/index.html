@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Tracking Camera</title>
+    <style>
+        button { margin: 5px; padding: 10px; }
+    </style>
+    <script>
+        function control(direction) {
+            fetch('/control', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'direction=' + direction
+            })
+            .then(response => response.json())
+            .then(data => console.log(data));
+        }
+
+        function toggleMode() {
+            fetch('/toggle_mode', {
+                method: 'POST',
+            })
+            .then(response => response.json())
+            .then(data => {
+                const mode = data.manual_control ? 'Manual' : 'Auto';
+                document.getElementById('mode-status').textContent = mode;
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Face Tracking Camera</h1>
+    <img src="{{ url_for('video_feed') }}" width="640" height="480">
+
+    <h2>Manual Control</h2>
+    <button onclick="control('up')">Up</button><br>
+    <button onclick="control('left')">Left</button>
+    <button onclick="control('right')">Right</button><br>
+    <button onclick="control('down')">Down</button>
+
+    <h2>Mode: <span id="mode-status">Auto</span></h2>
+    <button onclick="toggleMode()">Toggle Mode</button>
+</body>
+</html>
